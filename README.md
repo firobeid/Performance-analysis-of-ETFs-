@@ -237,15 +237,16 @@ Skewness           -0.923561666 -0.762275422
 Kurtosis            5.203672612  4.471846436
 ```
   ### Covariance and Correlation Matrix for All funds
+  ```
   cov(LR_data[[1]], LR_data[[1]], use="complete.obs")
   cor(LR_data[[1]], LR_data[[1]], use="complete.obs")
-
+```
   ### Covariance and Correlation Matrix for all funds vs Market Index
+  ```
   cov(LR_data[[1]], LR_data[[3]], use="complete.obs")
   cor(LR_data[[1]], LR_data[[3]], use="complete.obs")
-  
   corrplot(cor(LR_data[[1]], LR_data[[1]], use="complete.obs"),method='color')
- 
+ ```
 ## Calculating Tracking Error of all ETFs
 Tracking Error is a used as a measure to assess the overall variability in performance of the fund versus the index it tracks
 ```  
