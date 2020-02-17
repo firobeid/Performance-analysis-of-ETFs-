@@ -103,7 +103,6 @@ ETF fund analysis and Portfolio Management
   
 ## ETFs Log Returns Distribtion
   ![](images/Rplot02.png)
-
 ### Normality Test of ETFs:
 ```
   par(mfrow=c(2,3))
