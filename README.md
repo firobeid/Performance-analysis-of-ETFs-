@@ -1,7 +1,19 @@
 # Performance Analysis of ETFs
-ETF fund analysis and Portfolio Management
+## ETF fund analysis and Portfolio Management
 
--The objective of this project is to examine the performance of large AI ETFs and assess the risk environments.
+The objective of this project is to examine the performance of large AI ETFs and assess the risk environments.
+
+An Exchange-Traded Fund (ETF) is a security that tracks an index or basket of securities and is traded on an exchange. 
+ETFs are traded just like stocks, experiencing price fluctuations throughout the day.
+
+## Advantages of ETFs
+- Low Expense Ratio: Based on reports by Morgan Stanley Smith Barney ETF have an average expense ratio of 0.55 while mutual funds have about 1.34%
+- Tax Advantages: ETF are more Tax beneficial than Mutual funds 
+- Diversification: Provides diversification of a mutual fund plus the flexibility of a stock
+- Transparency: Holdings updated end of each day
+- Flexibility: Prices are reported every 15 seconds
+
+
 ### Import needed libraries
 ```
   library("quantmod")
