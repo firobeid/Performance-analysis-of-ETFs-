@@ -1,8 +1,8 @@
 # Performance-analysis-of-ETFs
 ETF fund analysis and Portfolio Management
 
-# The objective of this project is to examine the performance of large AI ETFs and assess the risk environments.
-# Import needed libraries
+-The objective of this project is to examine the performance of large AI ETFs and assess the risk environments.
+### Import needed libraries
 ```
   library("quantmod")
   library("moments")
@@ -10,28 +10,30 @@ ETF fund analysis and Portfolio Management
   library('corrplot')
 ``` 
 
-# list of all ticker symbols for which data will be retrieved:
-
+### list of all ticker symbols for which data will be retrieved:
+```
   tickers <- c("ROBO","AIA","AIRR","QQQ","VGT","^GSPC", "^IRX", "USNQX")
+```
+  - ROBO: Global Robotics and Automation Index ETF
+  - Index: Robo-Stox Global Robotics and Automation Index
+  - AIA:  iShares S&P Asia ETF
+  - Index: S&P Asia 50 Index
+  - AIRR:  First Trust RBA American Industrial Renaissance ETF
+  - INDEX: Richard Bernstein Advisors American Industrial Renaissance Index
+  - QQQ:  Invesco QQQ
+  - Index: NASDAQ-100 Index
+  - VTG: Vanguard Information Technology ETF
+  - Index: MSCI US Investable Market Information Technology 25/50 Index
+  - Retrieve weekly time-series data for ticker symbols from 2014-04-01 to 2019-04-01
 
-  # ROBO: Global Robotics and Automation Index ETF
-  # Index: Robo-Stox Global Robotics and Automation Index
-  # AIA:  iShares S&P Asia ETF
-  # Index: S&P Asia 50 Index
-  # AIRR:  First Trust RBA American Industrial Renaissance ETF
-  # INDEX: Richard Bernstein Advisors American Industrial Renaissance Index
-  # QQQ:  Invesco QQQ
-  # Index: NASDAQ-100 Index
-  # VTG: Vanguard Information Technology ETF
-  # Index: MSCI US Investable Market Information Technology 25/50 Index
-  # Retrieve weekly time-series data for ticker symbols from 2014-04-01 to 2019-04-01
-
-  # Column naming
+  ### Column naming
+  ```
   etf_names = c("ROBO", "AIA","AIRR", "QQQ", "VGT")
   etfIndex_names = c("ROBO-STOX", "S&P Asia 50","RBAAIR", "NASDAQ-100", "MSCI")
   market_names = c("S&P 500", "DJUSTC")
-
- # Data Extraction and Importing CSVs 
+```
+ ### Data Extraction and Importing CSVs 
+ ```
   getSymbols(tickers, from="2014-04-01", to="2019-04-01", periodicity="weekly", return.class="xts")
   ROBO.STOX = matrix(scan("ROBO.STOX.csv", what=numeric()), nrow=261) 
   SPASIA50 = matrix(scan("SPASIA50.csv", what=numeric()), nrow=261)
@@ -45,8 +47,9 @@ ETF fund analysis and Portfolio Management
   market.index = cbind(GSPC[,6], DJUSTC)
   T_yield =  IRX[,6] / 100
   colnames(market.index) = market_names
-
-# Calculate Log Returns on Prices
+```
+### Calculate Log Returns on Prices
+```
   get_logRet = function(prices){
     log_ret = matrix(0, nrow = dim(prices)[1], ncol = dim(prices)[2])
     for(i in 1:dim(log_ret)[2]){
@@ -64,10 +67,12 @@ ETF fund analysis and Portfolio Management
   market.index_logRet = get_logRet(market.index)
   colnames(market.index_logRet) = market_names
   
-  # Data Compiled to be used for Analysis 
+  #Data Compiled to be used for Analysis 
+  
   LR_data = list(ETF.AI_logRet, ETF.Index_logRet, market.index_logRet)
-
-# Plotting Histogram of returns
+```
+### Plotting Histogram of Returns
+```
   plotting = function(x, names){
     x = coredata(x)
     h <- hist(x, breaks = 104, density = 10, main = names, xlab = "Weekly Log Returns")
@@ -89,8 +94,18 @@ ETF fund analysis and Portfolio Management
       plotting(LR_data[[l]][,i], colnames(LR_data[[l]])[i])
     }
   }
+  ```
+## ETFs Log Returns Distribtion
+  ![](images/Rplot.png)
+  
+## Indicies Log Returns Distribtion  
+  ![](images/Rplot01.png)
+  
+## ETFs Log Returns Distribtion
+  ![](images/Rplot02.png)
 
-# Normality Test of ETFs:
+### Normality Test of ETFs:
+```
   par(mfrow=c(2,3))
   for (i in 1:dim(ETF.Index_logRet)[2])
   {
@@ -99,8 +114,7 @@ ETF fund analysis and Portfolio Management
     qqline(ETF.AI_logRet[,i],datax=TRUE)
     print(shapiro.test(ETF.AI_logRet[,i]))
   }
-'''
-	Shapiro-Wilk normality test
+*	Shapiro-Wilk normality test
 
 data:  ETF.AI_logRet[, i]
 W = 0.97516, p-value = 0.0001657
@@ -120,8 +134,9 @@ W = 0.96211, p-value = 2.395e-06
 
 data:  ETF.AI_logRet[, i]
 W = 0.96601, p-value = 7.8e-06
-'''
-
+```
+ ![](images/Rplot03.png)
+```
   par(mfrow=c(2,3))
   for (i in 1:dim(ETF.Index_logRet)[2])
   {
@@ -130,8 +145,7 @@ W = 0.96601, p-value = 7.8e-06
     qqline(ETF.Index_logRet[,i],datax=TRUE)
     print(shapiro.test(ETF.Index_logRet[,i]))
   }
-'''
-	Shapiro-Wilk normality test
+*	Shapiro-Wilk normality test
 
 data:  ETF.Index_logRet[, i]
 W = 0.95685, p-value = 5.404e-07
@@ -151,11 +165,13 @@ W = 0.96249, p-value = 2.682e-06
 
 data:  ETF.Index_logRet[, i]
 W = 0.96744, p-value = 1.22e-05
-'''
-  ###From the p-value of Shapiro test, ETFs and Indicies log retrun distribution is not normal
+```
+ ![](images/Rplot04.png)
+ 
+*From the p-value of Shapiro test, ETFs and Indicies log retrun distribution is not normal
 
-  # Summary Statistics Function
-
+  ## Summary Statistics 
+  ```
   get_stats = function(data){
     return(c(mean(data, na.rm=TRUE)*52, median(data, na.rm=TRUE)*52, sd(data, na.rm=TRUE)*sqrt(52),
              quantile(data, 0.25, na.rm=TRUE), quantile(data, 0.75, na.rm=TRUE),
@@ -208,20 +224,20 @@ q25                -0.006746296 -0.009074238
 q75                 0.012159673  0.018298110
 Skewness           -0.923561666 -0.762275422
 Kurtosis            5.203672612  4.471846436
-'''
-  # Covariance and Correlation Matrix for All funds
+```
+  ### Covariance and Correlation Matrix for All funds
   cov(LR_data[[1]], LR_data[[1]], use="complete.obs")
   cor(LR_data[[1]], LR_data[[1]], use="complete.obs")
 
-  # Covariance and Correlation Matrix for all funds vs Market Index
+  ### Covariance and Correlation Matrix for all funds vs Market Index
   cov(LR_data[[1]], LR_data[[3]], use="complete.obs")
   cor(LR_data[[1]], LR_data[[3]], use="complete.obs")
   
   corrplot(cor(LR_data[[1]], LR_data[[1]], use="complete.obs"),method='color')
  
-# Calculating Tracking Error of all ETFs
-  # Tracking Error is a used as a measure to assess the overall variability in performance of the fund versus the index it tracks
-  
+## Calculating Tracking Error of all ETFs
+Tracking Error is a used as a measure to assess the overall variability in performance of the fund versus the index it tracks
+```  
   calc_trackingError = function(rp, rb){
     te = sqrt(mean(((rp - rb) ** 2), na.rm = TRUE) / (261 - 1))
     return(te)
@@ -242,11 +258,11 @@ Kurtosis            5.203672612  4.471846436
 # AIRR   0.0024940466
 # QQQ    0.0001751197
 # VGT    0.0001863537
-
+```
   
-# Sharpe Ratios of ETFS and Indices
-  #It calculates the risk adjusted excess return that every fund earns. In this case we are calculating an annual Sharpe Ratio.
-  
+### Sharpe Ratios of ETFS and Indices
+It calculates the risk adjusted excess return that every fund earns. In this case we are calculating an annual Sharpe Ratio.
+```  
   calc.sharpe.annual = function(R, r, std){
     s.r = (mean(R,na.rm = TRUE) - mean(r,na.rm = TRUE)/52/100) / sd(std,na.rm = TRUE)
     return(s.r)     
@@ -271,11 +287,11 @@ Kurtosis            5.203672612  4.471846436
   sharpes.index = cbind(sharp.mat.indx,sharp.mat.indx.annual)
   print(sharpes.etf)
   print(sharpes.index)
-  
+ ``` 
 
-#Hypothesis Test to check if weekly mean difference is zero
-  #Using the paired T-test with 95% confidence Interval
-
+### Hypothesis Test to check if weekly mean difference is zero
+Using the paired T-test with 95% confidence Interval
+```
   t.tst = function(m.etf, m.fund){
     return(t.test(m.etf,m.fund, paired = TRUE)) 
   }
@@ -289,9 +305,10 @@ Kurtosis            5.203672612  4.471846436
       test.hypo.2samp = t.test(LR_data[[1]][,m],LR_data[[2]][,m], paired = TRUE)
       print(test.hypo.2samp)
   }
-  
+ ``` 
  
-  # Function to visualize the Regression line with data point of each ETF
+### Function to visualize the Regression line with data point of each ETF
+```
   plot_regressLine = function(f_ex, m_ex, cn){
     df = data.frame( m_ex, f_ex)
     colnames(df) = cn
@@ -300,8 +317,10 @@ Kurtosis            5.203672612  4.471846436
     abline(mod, col="blue")
     text(-0.05, 0.05, coef(mod)[2], pos = 4)
   }
+  ```
   
-  # Function to calculate excess weekly return over the T-bill rate
+### Function to calculate excess weekly return over the T-bill rate
+```
   calc_ExcessRet = function(fund){
     fund_excess = matrix(0, nrow = dim(fund)[1] - 1, ncol = dim(fund)[2])
     for(f in 1:dim(fund)[2]){
@@ -315,9 +334,11 @@ Kurtosis            5.203672612  4.471846436
   
   market_excess = calc_ExcessRet(LR_data[[3]])
   colnames(market_excess) = c("S&P500_Excess", "DJUSTC_Excess")
+  ```
 
-# Calculating Beta for each ETF
-  # Beta is the slope of the Regression Line. It is a measure to understand the relation between the ETF vs the market (S&P 500)
+### Calculating Beta for each ETF
+Beta is the slope of the Regression Line. It is a measure to understand the relation between the ETF vs the market (S&P 500)
+```
   est_beta = function(ETF.x, market.x){
     estimates = matrix(0, nrow = dim(ETF.x)[2], ncol = 3)
     for(e in 1:dim(ETF.x)[2]){
@@ -330,8 +351,9 @@ Kurtosis            5.203672612  4.471846436
     rownames(estimates) = etf_names
     return(estimates)
   }
-  
-# Estimating Alpha and Beta with S&P 500 Returns 
+  ```
+### Estimating Alpha and Beta with S&P 500 Returns 
+```
   est_SP = est_beta(ETF_excess, market_excess[,1])
   print(est_SP)
   
@@ -347,8 +369,11 @@ Kurtosis            5.203672612  4.471846436
   # AIRR -1.034074e-03 1.2441195 0.6290744
   # QQQ   1.188517e-03 1.1421737 0.8480220
   # VGT   1.488326e-03 1.1608426 0.8356788
+  ```
+   ![](images/Rplot05.png)
   
-# Estimating Alpha and Beta with Dow Jones Technology Index 
+### Estimating Alpha and Beta with Dow Jones Technology Index 
+```
   est_DJ = est_beta(ETF_excess, market_excess[,2])
   print(est_DJ)
   
@@ -364,10 +389,12 @@ Kurtosis            5.203672612  4.471846436
     cname = c(colnames(market_excess)[2], colnames(ETF_excess)[i])
     plot_regressLine(ETF_excess[,i], market_excess[,2], cname)
   }
+  ```
+   ![](images/Rplot06.png)
 
-# Analysis of Variance (ANOVA) for each ETF
-  #ANOVA is a collection of variation statistical model which separate data variance into different components for a test
-  
+### Analysis of Variance (ANOVA) for each ETF
+ANOVA is a collection of variation statistical model which separate data variance into different components for a test
+```  
   for(m in 1:dim(market_excess)[2]){
     for(e in 1:dim(ETF_excess)[2]){
       print("<----------------------------------------------------->")
@@ -378,3 +405,4 @@ Kurtosis            5.203672612  4.471846436
       plot(anova_ETF, 1:6)
     }
   }
+  ```
